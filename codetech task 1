@@ -1,0 +1,57 @@
+import requests
+import matplotlib.pyplot as plt
+import seaborn as sns
+import datetime
+
+# Set your OpenWeatherMap API key
+API_KEY = 'your_api_key_here'
+CITY = 'London'
+UNITS = 'metric'  # Use 'imperial' for Fahrenheit
+
+# Fetch weather forecast (5-day forecast at 3-hour intervals)
+url = f'https://api.openweathermap.org/data/2.5/forecast?q={CITY}&appid={API_KEY}&units={UNITS}'
+response = requests.get(url)
+data = response.json()
+
+# Extract needed information
+times = []
+temperatures = []
+humidities = []
+conditions = []
+
+for entry in data['list']:
+    dt = datetime.datetime.fromtimestamp(entry['dt'])
+    temp = entry['main']['temp']
+    humidity = entry['main']['humidity']
+    condition = entry['weather'][0]['main']
+    
+    times.append(dt)
+    temperatures.append(temp)
+    humidities.append(humidity)
+    conditions.append(condition)
+
+# Set plot style
+sns.set(style="darkgrid")
+
+# Create a 2x1 dashboard
+fig, ax = plt.subplots(2, 1, figsize=(12, 10))
+
+# 1. Temperature Trend
+sns.lineplot(x=times, y=temperatures, ax=ax[0], color='orange')
+ax[0].set_title(f"Temperature Trend in {CITY}")
+ax[0].set_xlabel("Date and Time")
+ax[0].set_ylabel(f"Temperature (°{'C' if UNITS == 'metric' else 'F'})")
+ax[0].tick_params(axis='x', rotation=45)
+
+# 2. Humidity + Weather Condition
+sns.lineplot(x=times, y=humidities, ax=ax[1], label='Humidity (%)', color='blue')
+ax2 = ax[1].twinx()
+sns.scatterplot(x=times, y=conditions, ax=ax2, label='Condition', color='red', marker='o')
+ax[1].set_xlabel("Date and Time")
+ax[1].set_ylabel("Humidity (%)")
+ax2.set_ylabel("Weather Condition")
+ax[1].tick_params(axis='x', rotation=45)
+ax[1].set_title(f"Humidity & Conditions in {CITY}")
+
+plt.tight_layout()
+plt.show()
