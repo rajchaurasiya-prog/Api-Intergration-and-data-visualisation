@@ -124,5 +124,5 @@ Overall, this script is a powerful tool that bridges live meteorological data wi
 
 
 
-No file chosenNo file chosen
-ChatGPT can make mistakes. Check important info. See Cookie Preferences.
+Output:
+![Image](https://github.com/user-attachments/assets/a560c6df-3d50-4258-bf7b-4e52bdc0a2b0)
